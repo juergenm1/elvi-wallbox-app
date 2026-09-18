@@ -29,6 +29,11 @@ jobs:
           pip3 install --upgrade pip
           pip3 install buildozer cython
 
+      - name: Clone and patch python-for-android
+        run: |
+          git clone https://github.com/kivy/python-for-android.git p4a-patched
+          python3 patch_p4a.py p4a-patched
+
       - name: Build APK
         run: |
           yes | buildozer -v android debug
