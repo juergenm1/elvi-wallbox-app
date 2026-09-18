@@ -22,7 +22,13 @@ android.permissions = INTERNET,ACCESS_NETWORK_STATE,ACCESS_WIFI_STATE
 android.api = 34
 android.minapi = 21
 android.accept_sdk_license = True
-p4a.branch = v2026.05.09
+
+# Lokale, im Workflow automatisch gepatchte Kopie von python-for-android
+# verwenden (siehe Schritt "Patch python-for-android" in build.yml).
+# Diese behebt den Bug "ImportError: BuildDependencyInstallError", der in
+# JEDER bisher veröffentlichten Version (master und Release-Tags) noch
+# auftritt.
+p4a.source_dir = ./p4a-patched
 
 [buildozer]
 
