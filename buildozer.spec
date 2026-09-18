@@ -21,6 +21,7 @@ android.permissions = INTERNET,ACCESS_NETWORK_STATE,ACCESS_WIFI_STATE
 # Ziel-API / min-API anpassen falls nötig
 android.api = 34
 android.minapi = 21
+android.accept_sdk_license = True
 
 [buildozer]
 
