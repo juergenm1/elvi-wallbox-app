@@ -22,6 +22,7 @@ android.permissions = INTERNET,ACCESS_NETWORK_STATE,ACCESS_WIFI_STATE
 android.api = 34
 android.minapi = 21
 android.accept_sdk_license = True
+p4a.branch = master
 
 [buildozer]
 
