@@ -22,12 +22,14 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.scrollview import ScrollView
 from kivy.metrics import dp
 from kivy.core.window import Window
+
 Window.clearcolor = (0.05, 0.08, 0.12, 1)
 
 
 # ---------------------------------------------------------------------------
 # Original Wallbox-Logik (unverändert aus dem Konsolenskript übernommen)
 # ---------------------------------------------------------------------------
+
 
 def checksum_elvi(command):
     # Calculates the Fletcher-8 checksum (sum modulo 256) and the XOR-checksum of
@@ -181,179 +183,181 @@ def get_wb_data(charge_current, host, port, log, wait_seconds=25):
 # Kivy Oberfläche
 # ---------------------------------------------------------------------------
 
+
 class WallboxLayout(BoxLayout):
     pass
 
 
 class ElviWallboxApp(App):
     def build(self):
+        self.title = "Elvi Wallbox"
 
-    self.title = "Elvi Wallbox"
+        root = BoxLayout(
+            orientation='vertical',
+            padding=dp(20),
+            spacing=dp(15)
+        )
 
-    root = BoxLayout(
-        orientation='vertical',
-        padding=dp(20),
-        spacing=dp(15)
-    )
+        title = Label(
+            text="⚡ ELVI WALLBOX",
+            font_size="30sp",
+            bold=True,
+            color=(0.1, 0.85, 0.65, 1),
+            size_hint_y=None,
+            height=dp(60)
+        )
+        root.add_widget(title)
 
-    title = Label(
-        text="⚡ ELVI WALLBOX",
-        font_size="30sp",
-        bold=True,
-        color=(0.1, 0.85, 0.65, 1),
-        size_hint_y=None,
-        height=dp(60)
-    )
-    root.add_widget(title)
+        subtitle = Label(
+            text="Ladesteuerung",
+            font_size="16sp",
+            color=(0.8, 0.9, 1, 1),
+            size_hint_y=None,
+            height=dp(25)
+        )
+        root.add_widget(subtitle)
 
-    subtitle = Label(
-        text="Ladesteuerung",
-        font_size="16sp",
-        color=(0.8, 0.9, 1, 1),
-        size_hint_y=None,
-        height=dp(25)
-    )
-    root.add_widget(subtitle)
+        root.add_widget(Label(
+            text="Verbindung",
+            color=(0.6, 0.85, 1, 1),
+            font_size="18sp",
+            size_hint_y=None,
+            height=dp(30)
+        ))
 
-    root.add_widget(Label(
-        text="Verbindung",
-        color=(0.6, 0.85, 1, 1),
-        font_size="18sp",
-        size_hint_y=None,
-        height=dp(30)
-    ))
+        conn_row = BoxLayout(
+            orientation='horizontal',
+            size_hint_y=None,
+            height=dp(55),
+            spacing=dp(10)
+        )
 
-    conn_row = BoxLayout(
-        orientation='horizontal',
-        size_hint_y=None,
-        height=dp(55),
-        spacing=dp(10)
-    )
+        self.host_input = TextInput(
+            text="60.60.60.26",
+            hint_text="IP-Adresse",
+            multiline=False,
+            background_color=(0.15, 0.18, 0.22, 1),
+            foreground_color=(1, 1, 1, 1)
+        )
 
-    self.host_input = TextInput(
-        text="60.60.60.26",
-        hint_text="IP-Adresse",
-        multiline=False,
-        background_color=(0.15, 0.18, 0.22, 1),
-        foreground_color=(1, 1, 1, 1)
-    )
+        self.port_input = TextInput(
+            text="8898",
+            hint_text="Port",
+            multiline=False,
+            size_hint_x=0.35,
+            background_color=(0.15, 0.18, 0.22, 1),
+            foreground_color=(1, 1, 1, 1)
+        )
 
-    self.port_input = TextInput(
-        text="8898",
-        hint_text="Port",
-        multiline=False,
-        size_hint_x=0.35,
-        background_color=(0.15, 0.18, 0.22, 1),
-        foreground_color=(1, 1, 1, 1)
-    )
+        conn_row.add_widget(self.host_input)
+        conn_row.add_widget(self.port_input)
 
-    conn_row.add_widget(self.host_input)
-    conn_row.add_widget(self.port_input)
+        root.add_widget(conn_row)
 
-    root.add_widget(conn_row)
+        root.add_widget(Label(
+            text="Ladeleistung",
+            color=(0.6, 0.85, 1, 1),
+            font_size="18sp",
+            size_hint_y=None,
+            height=dp(30)
+        ))
 
-    root.add_widget(Label(
-        text="Ladeleistung",
-        color=(0.6, 0.85, 1, 1),
-        font_size="18sp",
-        size_hint_y=None,
-        height=dp(30)
-    ))
+        power_row = BoxLayout(
+            orientation='horizontal',
+            size_hint_y=None,
+            height=dp(55),
+            spacing=dp(10)
+        )
 
-    power_row = BoxLayout(
-        orientation='horizontal',
-        size_hint_y=None,
-        height=dp(55),
-        spacing=dp(10)
-    )
+        power_row.add_widget(Label(
+            text="4.14 - 11.04 kW",
+            size_hint_x=0.6,
+            color=(1, 1, 1, 1)
+        ))
 
-    power_row.add_widget(Label(
-        text="4.14 - 11.04 kW",
-        size_hint_x=0.6,
-        color=(1, 1, 1, 1)
-    ))
+        self.power_input = TextInput(
+            text="11.04",
+            multiline=False,
+            input_filter='float',
+            size_hint_x=0.4,
+            background_color=(0.15, 0.18, 0.22, 1),
+            foreground_color=(1, 1, 1, 1)
+        )
 
-    self.power_input = TextInput(
-        text="11.04",
-        multiline=False,
-        input_filter='float',
-        size_hint_x=0.4,
-        background_color=(0.15, 0.18, 0.22, 1),
-        foreground_color=(1, 1, 1, 1)
-    )
+        power_row.add_widget(self.power_input)
 
-    power_row.add_widget(self.power_input)
+        root.add_widget(power_row)
 
-    root.add_widget(power_row)
+        self.send_button = Button(
+            text="⚡ Ladeleistung senden",
+            size_hint_y=None,
+            height=dp(65),
+            background_normal='',
+            background_color=(0.10, 0.75, 0.55, 1),
+            color=(1, 1, 1, 1),
+            font_size='18sp',
+            bold=True
+        )
 
-    self.send_button = Button(
-        text="⚡ Ladeleistung senden",
-        size_hint_y=None,
-        height=dp(65),
-        background_normal='',
-        background_color=(0.10, 0.75, 0.55, 1),
-        color=(1, 1, 1, 1),
-        font_size='18sp',
-        bold=True
-    )
+        self.send_button.bind(on_press=self.on_send_pressed)
 
-    self.send_button.bind(on_press=self.on_send_pressed)
+        root.add_widget(self.send_button)
 
-    root.add_widget(self.send_button)
+        self.status_label = Label(
+            text="✅ Bereit",
+            size_hint_y=None,
+            height=dp(40),
+            color=(0.6, 1, 0.6, 1),
+            font_size='18sp'
+        )
 
-    self.status_label = Label(
-        text="✅ Bereit",
-        size_hint_y=None,
-        height=dp(40),
-        color=(0.6, 1, 0.6, 1),
-        font_size='18sp'
-    )
+        root.add_widget(self.status_label)
 
-    root.add_widget(self.status_label)
+        root.add_widget(Label(
+            text="Protokoll",
+            font_size='18sp',
+            color=(0.6, 0.85, 1, 1),
+            size_hint_y=None,
+            height=dp(30)
+        ))
 
-    root.add_widget(Label(
-        text="Protokoll",
-        font_size='18sp',
-        color=(0.6, 0.85, 1, 1),
-        size_hint_y=None,
-        height=dp(30)
-    ))
+        self.log_label = Label(
+            text="",
+            size_hint_y=None,
+            valign='top',
+            halign='left',
+            color=(0.95, 0.98, 1, 1),
+            font_size='16sp'
+        )
 
-    self.log_label = Label(
-        text="",
-        size_hint_y=None,
-        valign='top',
-        halign='left',
-        color=(0.95, 0.98, 1, 1),
-        font_size='16sp'
-    )
+        self.log_label.bind(
+            width=lambda inst, w:
+            setattr(inst, 'text_size', (w, None))
+        )
 
-    self.log_label.bind(
-        width=lambda inst, w:
-        setattr(inst, 'text_size', (w, None))
-    )
+        self.log_label.bind(
+            texture_size=lambda inst, ts:
+            setattr(inst, 'height', ts[1])
+        )
 
-    self.log_label.bind(
-        texture_size=lambda inst, ts:
-        setattr(inst, 'height', ts[1])
-    )
+        scroll = ScrollView()
+        scroll.add_widget(self.log_label)
 
-    scroll = ScrollView()
-    scroll.add_widget(self.log_label)
+        root.add_widget(scroll)
 
-    root.add_widget(scroll)
-
-    return root
+        return root
 
     # -- Logging Hilfsfunktion (thread-sicher über Clock) --------------------
     def log(self, message):
         def _update(dt):
             self.log_label.text += message + "\n"
+
         Clock.schedule_once(_update, 0)
 
     def set_status(self, text):
         def _update(dt):
             self.status_label.text = text
+
         Clock.schedule_once(_update, 0)
 
     # -- Button-Handler --------------------------------------------------
@@ -407,6 +411,7 @@ class ElviWallboxApp(App):
 
         def _reenable(dt):
             self.send_button.disabled = False
+
         Clock.schedule_once(_reenable, 0)
 
 
